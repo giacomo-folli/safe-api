@@ -21,7 +21,7 @@ export default class Order extends BaseModel {
 
   @column({
     serialize: (value: string) => JSON.parse(value),
-    prepare: (value: any) => JSON.stringify(value)
+    prepare: (value: any) => JSON.stringify(value),
   })
   declare shippingAddress: {
     street: string
