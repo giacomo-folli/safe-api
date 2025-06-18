@@ -1,24 +1,26 @@
-import { CreateOrderSchema } from '@ecommerce/shared'
-import type { CreateOrder } from '@ecommerce/shared'
+import {
+  CreateOrderSchema,
+  type CreateOrder,
+} from "@ecommerce/shared/dist/schemas/order";
 
-type ValidationResult = 
+type ValidationResult =
   | { success: true; data: CreateOrder }
-  | { success: false; errors: Record<string, string> }
+  | { success: false; errors: Record<string, string> };
 
 export function validateOrder(data: unknown): ValidationResult {
   try {
-    return { success: true, data: CreateOrderSchema.parse(data) }
+    return { success: true, data: CreateOrderSchema.parse(data) };
   } catch (error: any) {
-    const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
     error.errors?.forEach((err: any) => {
-      errors[err.path.join('.')] = err.message
-    })
-    return { success: false, errors }
+      errors[err.path.join(".")] = err.message;
+    });
+    return { success: false, errors };
   }
 }
 
 export function formatValidationErrors(errors: Record<string, string>): string {
   return Object.entries(errors)
     .map(([field, message]) => `${field}: ${message}`)
-    .join(', ')
+    .join(", ");
 }

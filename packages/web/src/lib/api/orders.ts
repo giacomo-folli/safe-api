@@ -3,14 +3,15 @@ import ApiClient from "./client";
 
 export default class OrderService extends ApiClient {
   async create(orderData: CreateOrder): Promise<OrderResponse> {
-    return this.client.post<OrderResponse>("/orders", orderData);
+    const res = await this.post<OrderResponse>("/orders", orderData);
+    return res;
   }
 
   async getById(id: number): Promise<OrderResponse> {
-    return this.client.get<OrderResponse>(`/orders/${id}`);
+    return await this.get<OrderResponse>(`/orders/${id}`);
   }
 
   async getAll(): Promise<OrderResponse[]> {
-    return this.client.get<OrderResponse[]>("/orders");
+    return await this.get<OrderResponse[]>("/orders");
   }
 }

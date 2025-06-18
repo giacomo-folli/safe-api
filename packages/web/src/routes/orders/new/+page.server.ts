@@ -30,15 +30,13 @@ export const actions: Actions = {
       });
     }
 
+    let order: OrderResponse;
     try {
       // Create the order
       const service = new OrderService({ fetch });
-      const order: OrderResponse = await service.create(validation.data);
-
-      // Redirect to the order details page on success
-      throw redirect(303, `/orders/${order.id}`);
+      order = await service.create(validation.data);
     } catch (error: any) {
-      console.error("Failed to create order:", error);
+      console.error("Failed to create order:", error.message);
 
       // Return a more specific error message if available
       const message =
@@ -46,5 +44,8 @@ export const actions: Actions = {
         "Failed to create order. Please try again.";
       return fail(500, { success: false, data, message });
     }
+
+    // Redirect to the order details page on success
+    if (order) throw redirect(303, `/orders/${order.id}`);
   },
 } satisfies Actions;

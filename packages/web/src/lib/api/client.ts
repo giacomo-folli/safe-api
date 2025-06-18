@@ -46,34 +46,25 @@ class ApiClient {
     return data.data as T;
   }
 
-  protected get client() {
-    return {
-      post: this.__post.bind(this),
-      put: this.__put.bind(this),
-      delete: this.__delete.bind(this),
-      get: this.__get.bind(this),
-    };
-  }
-
-  async __get<T>(endpoint: string): Promise<T> {
+  public async get<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint);
   }
 
-  async __post<T>(endpoint: string, data?: any): Promise<T> {
+  public async post<T>(endpoint: string, data?: any): Promise<T> {
     return this.request<T>(endpoint, {
       method: "POST",
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  async __put<T>(endpoint: string, data?: any): Promise<T> {
+  public async put<T>(endpoint: string, data?: any): Promise<T> {
     return this.request<T>(endpoint, {
       method: "PUT",
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  async __delete<T>(endpoint: string): Promise<T> {
+  public async delete<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, {
       method: "DELETE",
     });
