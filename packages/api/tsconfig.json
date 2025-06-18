@@ -1,0 +1,11 @@
+{
+  "extends": "@adonisjs/tsconfig/app",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "#controllers/*": ["./app/controllers/*"],
+      "#models/*": ["./app/models/*"],
+      "#config/*": ["./config/*"]
+    }
+  }
+}
