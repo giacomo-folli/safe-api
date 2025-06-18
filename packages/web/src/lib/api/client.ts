@@ -1,4 +1,8 @@
-import type { ApiResponse, ApiError as SharedApiError } from '@ecommerce/shared'
+import { browser } from "$app/environment";
+import type {
+  ApiResponse,
+  ApiError as SharedApiError,
+} from "@ecommerce/shared";
 
 export class ApiError extends Error implements SharedApiError {
   constructor(
@@ -6,52 +10,74 @@ export class ApiError extends Error implements SharedApiError {
     public details?: any,
     public status?: number
   ) {
-    super(message)
-    this.name = 'ApiError'
+    super(message);
+    this.name = "ApiError";
   }
 }
 
 class ApiClient {
-  private baseUrl = 'http://localhost:3333/api/v1'
+  protected fetch: any;
+  private baseUrl = "http://localhost:3333/api/v1";
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      headers: { 'Content-Type': 'application/json', ...options.headers },
-      ...options
-    })
+  constructor(params: { fetch: any }) {
+    if (browser) this.fetch = params.fetch.bind(window);
+    else this.fetch = params.fetch;
+  }
 
-    const data: ApiResponse<T> = await response.json()
-    
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const response = await this.fetch(`${this.baseUrl}${endpoint}`, {
+      headers: { "Content-Type": "application/json", ...options.headers },
+      ...options,
+    });
+
+    const data: ApiResponse<T> = await response.json();
+
     if (!response.ok || !data.success) {
-      throw new ApiError(data.error || 'Request failed', data.details, response.status)
+      throw new ApiError(
+        data.error || "Request failed",
+        data.details,
+        response.status
+      );
     }
 
-    return data.data as T
+    return data.data as T;
   }
 
-  async get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint)
+  protected get client() {
+    return {
+      post: this.__post.bind(this),
+      put: this.__put.bind(this),
+      delete: this.__delete.bind(this),
+      get: this.__get.bind(this),
+    };
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<T> {
+  async __get<T>(endpoint: string): Promise<T> {
+    return this.request<T>(endpoint);
+  }
+
+  async __post<T>(endpoint: string, data?: any): Promise<T> {
     return this.request<T>(endpoint, {
-      method: 'POST',
-      body: data ? JSON.stringify(data) : undefined
-    })
+      method: "POST",
+      body: data ? JSON.stringify(data) : undefined,
+    });
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<T> {
+  async __put<T>(endpoint: string, data?: any): Promise<T> {
     return this.request<T>(endpoint, {
-      method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined
-    })
+      method: "PUT",
+      body: data ? JSON.stringify(data) : undefined,
+    });
   }
 
-  async delete<T>(endpoint: string): Promise<T> {
+  async __delete<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, {
-      method: 'DELETE'
-    })
+      method: "DELETE",
+    });
   }
 }
 
-export const apiClient = new ApiClient()
+export default ApiClient;

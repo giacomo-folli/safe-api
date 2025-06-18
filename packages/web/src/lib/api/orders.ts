@@ -1,16 +1,16 @@
-import type { CreateOrder, OrderResponse } from '@ecommerce/shared'
-import { apiClient } from './client'
+import type { CreateOrder, OrderResponse } from "@ecommerce/shared";
+import ApiClient from "./client";
 
-export const orderService = {
+export default class OrderService extends ApiClient {
   async create(orderData: CreateOrder): Promise<OrderResponse> {
-    return apiClient.post<OrderResponse>('/orders', orderData)
-  },
+    return this.client.post<OrderResponse>("/orders", orderData);
+  }
 
   async getById(id: number): Promise<OrderResponse> {
-    return apiClient.get<OrderResponse>(`/orders/${id}`)
-  },
+    return this.client.get<OrderResponse>(`/orders/${id}`);
+  }
 
   async getAll(): Promise<OrderResponse[]> {
-    return apiClient.get<OrderResponse[]>('/orders')
+    return this.client.get<OrderResponse[]>("/orders");
   }
 }

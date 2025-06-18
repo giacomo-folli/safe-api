@@ -1,6 +1,11 @@
 import { CreateOrderSchema } from '@ecommerce/shared'
+import type { CreateOrder } from '@ecommerce/shared'
 
-export function validateOrder(data: unknown) {
+type ValidationResult = 
+  | { success: true; data: CreateOrder }
+  | { success: false; errors: Record<string, string> }
+
+export function validateOrder(data: unknown): ValidationResult {
   try {
     return { success: true, data: CreateOrderSchema.parse(data) }
   } catch (error: any) {
