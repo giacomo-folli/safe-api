@@ -2,6 +2,8 @@
 
 A complete example of building a type-safe full-stack application using shared TypeScript types between SvelteKit frontend and AdonisJS backend.
 
+For the full walk throught, checkout [this article](https://sk.giacomofolli.com/shared-api)
+
 ## Architecture
 
 This monorepo contains three packages:
